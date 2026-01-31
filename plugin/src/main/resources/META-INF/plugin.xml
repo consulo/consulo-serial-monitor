@@ -1,11 +1,11 @@
-<idea-plugin url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
-  <id>SerialPortMonitor</id>
-  <name>Serial Port Monitor</name>
-  <category>Embedded Development</category>
-  <vendor>JetBrains</vendor>
-  <description><![CDATA[
+<consulo-plugin url="https://github.com/consulo/consulo-serial-monitor">
+    <id>consulo.serial.monitor</id>
+    <name>Serial Port Monitor</name>
+    <category>Embedded Development</category>
+    <vendor>Consulo</vendor>
+    <description><![CDATA[
       This plugin provides the Serial Monitor Tool Window,
-      which allows you to communicate to serial devices like Arduino via the CLion window.
+      which allows you to communicate to serial devices like Arduino via the IDE window.
       <br/>
       <b>Features:</b>
       <ul>
@@ -19,19 +19,13 @@
 
     ]]></description>
 
-  <depends>com.intellij.modules.lang</depends>
+    <extensions defaultExtensionNs="consulo">
+        <toolWindow id="Serial Monitor" anchor="bottom" secondary="true"
+                    factoryClass="com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory"
+                    icon="consulo.serial.monitor.SerialMonitorIconGroup/disconnectedSerial"/>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <toolWindow id="Serial Monitor" anchor="bottom" icon="SerialMonitorIcons.DisconnectedSerial"
-                doNotActivateOnStart="false"
-                factoryClass="com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory"
-                canCloseContents="true" secondary="false"/>
-
-    <notificationGroup id="Serial Monitor Notification" toolWindowId="Serial Monitor" displayType="TOOL_WINDOW"
-                       bundle="messages.SerialMonitorBundle" key="notification.group.serial.monitor.notification"/>
-
-    <statistics.counterUsagesCollector implementationClass="com.intellij.plugins.serialmonitor.SerialMonitorCollector"/>
-    <statistics.applicationUsagesCollector implementation="com.intellij.plugins.serialmonitor.SerialMonitorUsagesCollector"/>
-  </extensions>
-  <resource-bundle>messages.SerialMonitorBundle</resource-bundle>
-</idea-plugin>
+        <notificationGroup id="Serial Monitor Notification" toolWindowId="Serial Monitor" displayType="TOOL_WINDOW"
+                           bundle="messages.SerialMonitorBundle" key="notification.group.serial.monitor.notification"/>
+    </extensions>
+    <resource-bundle>messages.SerialMonitorBundle</resource-bundle>
+</consulo-plugin>

@@ -17,7 +17,7 @@
     <repositories>
         <repository>
             <id>consulo</id>
-            <url>https://maven.consulo.io/repository/snapshots/</url>
+            <url>https://maven.consulo.dev/repository/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>interval:60</updatePolicy>
@@ -58,4 +58,31 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-ide-impl</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>consulo.internal</groupId>
+            <artifactId>jediterm</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fazecast</groupId>
+            <artifactId>jSerialComm</artifactId>
+            <version>2.10.4</version>
+        </dependency>
+    </dependencies>
 </project>

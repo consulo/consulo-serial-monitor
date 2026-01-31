@@ -1,8 +1,8 @@
 package com.intellij.plugins.serialmonitor.ui.console;
 
-import com.intellij.execution.impl.ConsoleViewImpl;
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.project.Project;
+import consulo.execution.ui.console.ConsoleViewContentType;
+import consulo.ide.impl.idea.execution.impl.ConsoleViewImpl;
+import consulo.project.Project;
 
 /**
  * @author Dmitry_Cherkas

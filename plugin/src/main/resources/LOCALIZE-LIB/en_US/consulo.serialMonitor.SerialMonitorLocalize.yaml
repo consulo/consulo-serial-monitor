@@ -1,0 +1,198 @@
+connect.title:
+    text: Connect
+disconnect.title:
+    text: Disconnect
+connect.invalid.settings.title:
+    text: Invalid Port
+connect.tooltip:
+    text: Open serial port
+edit.settings.title:
+    text: Settings
+edit.settings.tooltip:
+    text: Open Serial Monitor settings dialog
+send.title:
+    text: '&Send'
+switch.console.view.to.hex.title:
+    text: Switch to HEX View
+switch.console.view.off.hex.title:
+    text: Switch off HEX View
+action.clear.contents.console.description:
+    text: Clear the contents of the console
+cancel:
+    text: Cancel
+ok:
+    text: OK
+connecting:
+    text: Connecting…
+serial.port.parameters.wrong:
+    text: Failed to set SerialPort parameters
+serial.port.not.found:
+    text: Serial port "{0}" is not found.
+settings.display.name:
+    text: Serial Monitor
+port.connect.error:
+    text: Unable to connect to Serial port "{0}" - {1}
+hardware.flow.control.rts:
+    text: RTS
+hardware.flow.control.dtr:
+    text: DTR
+hardware.flow.control.cts:
+    text: CTS
+hardware.flow.control.dsr:
+    text: DSR
+uart.parity.odd:
+    text: Odd
+uart.parity.even:
+    text: Even
+uart.parity.none:
+    text: None
+uart.stopbits.1:
+    text: '1'
+uart.stopbits.2:
+    text: '2'
+uart.stopbits.1.5:
+    text: '1.5'
+uart.newline.cr:
+    text: CR
+uart.newline.lf:
+    text: LF
+uart.newline.crlf:
+    text: CR/LF
+label.port:
+    text: 'Port:'
+label.baud:
+    text: 'Baud:'
+label.bits:
+    text: 'Bits:'
+label.parity:
+    text: 'Parity:'
+label.stop.bits:
+    text: 'Stop bits:'
+label.new.line:
+    text: 'New line:'
+label.encoding:
+    text: 'Encoding:'
+dialog.title.serial.port.settings:
+    text: '{0} - Serial Parameters'
+default.item:
+    text: <Default>
+presentable.name:
+    text: Serial port profiles
+checkbox.send.eol:
+    text: Send EOL
+action.settings.text:
+    text: Settings…
+notification.group.serial.monitor.notification:
+    text: Serial monitor
+action.pause.text:
+    text: Pause
+action.pause.description:
+    text: Pause output
+tab.title.serial.connections:
+    text: Serial Connections
+tab.title.connect:
+    text: Connect
+action.disconnect.text:
+    text: Disconnect
+action.open.console.text:
+    text: Open Console
+action.connect.text:
+    text: Connect
+action.duplicate.profile.text:
+    text: Duplicate Profile
+action.remove.profile.text:
+    text: Remove Profile
+dialog.message.are.you.sure:
+    text: Are you sure
+dialog.title.delete.profile:
+    text: Delete Profile {0}
+action.create.profile.text:
+    text: Create Profile
+connection.profiles:
+    text: Connection Profiles
+available.ports:
+    text: Available Ports
+text.profile.already.exists:
+    text: Profile already exists
+dialog.message.name:
+    text: 'Name:'
+dialog.title.new.profile:
+    text: New Profile
+label.local.echo:
+    text: 'Local echo:'
+link.label.duplicate.profile:
+    text: Duplicate profile…
+button.connect:
+    text: Connect
+button.disconnect:
+    text: Disconnect
+button.open.console:
+    text: Open Console
+button.reconnect:
+    text: Reconnect
+link.label.create.profile:
+    text: Create profile…
+label.profile:
+    text: 'Profile:'
+dialog.message.port.name:
+    text: Enter port name
+dialog.message.port.does.not.exists:
+    text: Port does not exists
+label.port.name:
+    text: 'Port:'
+text.enter.unique.profile.name:
+    text: Enter unique profile name
+port.close.error:
+    text: Unable to close Serial port "{0}" - {1}
+port.modify.error:
+    text: Unable to modify Serial port "{0}" - {1}
+dialog.save.title:
+    text: Save History
+dialog.save.desc:
+    text: Choose a location for saving the serial monitor history
+action.save.text:
+    text: Save
+action.save.description:
+    text: Save history
+action.print.timestamps.text:
+    text: Display Timestamps
+action.print.timestamps.description:
+    text: Display timestamps at the beginning of each line
+label.show.hardware.flow.control:
+    text: 'Show HW controls:'
+hardware.flow.control.rts.tooltip:
+    text: Request To Send
+hardware.flow.control.dtr.tooltip:
+    text: Data Terminal Ready
+hardware.flow.control.cts.tooltip:
+    text: Clear To Send
+hardware.flow.control.dsr.tooltip:
+    text: Data Set Ready
+toolwindow.stripe.title:
+    text: Serial Monitor
+toolwindow.port.tab.title:
+    text: Connect
+tooltip.port.unavailable:
+    text: Port is unavailable
+tooltip.port.busy:
+    text: Port is busy
+tooltip.port.connecting:
+    text: Port is connecting
+dialog.title.reconnect.to.port:
+    text: Reconnect to {0}
+dialog.message.reconnect.to.port:
+    text: Port {0} is already in use by profile {1}. Reconnect?
+serial.port.rts.init.failed:
+    text: Failed to set initial RTS state
+serial.port.dtr.init.failed:
+    text: Failed to set initial DTR state
+serial.port.listener.failed:
+    text: Failed to add serial port listener
+serial.port.open.failed:
+    text: Failed to open serial port
+serial.port.rts.update.failed:
+    text: Failed to update RTS state
+serial.port.dtr.update.failed:
+    text: Failed to update DTR state
+please.enter.positive.number:
+    text: Please enter a positive number
