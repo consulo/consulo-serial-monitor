@@ -2,9 +2,6 @@ package com.intellij.plugins.serialmonitor.ui.console;
 
 import com.intellij.plugins.serialmonitor.SerialProfileService;
 import com.intellij.plugins.serialmonitor.service.SerialPortService;
-import com.jediterm.terminal.*;
-import com.jediterm.terminal.emulator.JediEmulator;
-import com.jediterm.terminal.model.JediTerminal;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import consulo.application.AllIcons;
 import consulo.disposer.Disposer;
@@ -12,10 +9,20 @@ import consulo.execution.ui.console.ConsoleView;
 import consulo.execution.ui.console.ConsoleViewContentType;
 import consulo.execution.ui.console.Filter;
 import consulo.execution.ui.console.HyperlinkInfo;
+import consulo.execution.ui.terminal.JediTerminalConsole;
+import consulo.execution.ui.terminal.TerminalConsoleFactory;
+import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.platform.base.localize.ActionLocalize;
 import consulo.process.ProcessHandler;
+import consulo.process.event.ProcessEvent;
 import consulo.project.Project;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
-import consulo.ui.ex.action.*;
+import consulo.ui.ex.action.ActionUpdateThread;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.ToggleAction;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.util.dataholder.Key;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.io.input.buffer.CircularByteBuffer;
@@ -26,12 +33,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.function.BiPredicate;
 
 public class JeditermConsoleView implements ConsoleView {
 
     private static final int BUFFER_SIZE = 100000;
 
-    private final JBTerminalWidget widget;
+    private final JediTerminalConsole widget;
     private final SerialTtyConnector serialConnector;
     private CustomJeditermEmulator emulator;
     private final CircularByteBuffer bytesBuffer = new CircularByteBuffer(BUFFER_SIZE);
@@ -46,7 +54,8 @@ public class JeditermConsoleView implements ConsoleView {
                 while (!Thread.interrupted() && !bytesBuffer.hasBytes()) {
                     try {
                         lock.wait();
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
                     }
@@ -61,7 +70,8 @@ public class JeditermConsoleView implements ConsoleView {
                 while (!Thread.interrupted() && !bytesBuffer.hasBytes()) {
                     try {
                         lock.wait();
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
                     }
@@ -83,21 +93,11 @@ public class JeditermConsoleView implements ConsoleView {
     public JeditermConsoleView(@Nonnull Project project, @Nonnull SerialPortService.SerialConnection connection) {
         this.serialConnector = new SerialTtyConnector(this, connection);
 
-        widget = new JBTerminalWidget(project, new JBTerminalSystemSettingsProviderBase(), this) {
-            @Override
-            protected @Nonnull TerminalStarter createTerminalStarter(@Nonnull JediTerminal terminal, @Nonnull TtyConnector connector) {
-                return new TerminalStarter(terminal, connector,
-                        new TtyBasedArrayDataStream(connector, () -> getTypeAheadManager().onTerminalStateChanged()),
-                        getTypeAheadManager(), getExecutorServiceManager()) {
-                    @Override
-                    protected @Nonnull JediEmulator createEmulator(@Nonnull TerminalDataStream dataStream, @Nonnull Terminal terminal) {
-                        emulator = new CustomJeditermEmulator(dataStream, terminal);
-                        return emulator;
-                    }
-                };
-            }
-        };
-        widget.start(serialConnector);
+        widget = project.getInstance(TerminalConsoleFactory.class).createCustom(this, (terminalDataStream, terminal) -> {
+            emulator = new CustomJeditermEmulator(terminalDataStream, terminal);
+            return emulator;
+        }, serialConnector);
+
         Disposer.register(this, connection);
     }
 
@@ -107,12 +107,12 @@ public class JeditermConsoleView implements ConsoleView {
 
     @Override
     public @Nonnull JComponent getComponent() {
-        return widget;
+        return (JComponent) TargetAWT.to(widget.getUIComponent());
     }
 
     @Override
     public @Nonnull JComponent getPreferredFocusableComponent() {
-        return widget;
+        return getComponent();
     }
 
     @Override
@@ -122,7 +122,9 @@ public class JeditermConsoleView implements ConsoleView {
 
     @Override
     public void clear() {
-        widget.getTerminalTextBuffer().clearScreenAndHistoryBuffers();
+        widget.getTerminalTextBuffer().clearAll();
+        widget.getTerminalTextBuffer().clearHistory();
+        //widget.getTerminalTextBuffer().clearScreenAndHistoryBuffers();
         widget.getTerminal().clearScreen();
         widget.getTerminal().cursorPosition(0, 1);
     }
@@ -164,6 +166,16 @@ public class JeditermConsoleView implements ConsoleView {
     @Override
     public void addMessageFilter(@Nonnull Filter filter) {
         throw new UnsupportedOperationException("Operation not supported");
+    }
+
+    @Override
+    public void setProcessTextFilter(@Nullable BiPredicate<ProcessEvent, Key> biPredicate) {
+    }
+
+    @Nullable
+    @Override
+    public BiPredicate<ProcessEvent, Key> getProcessTextFilter() {
+        return null;
     }
 
     @Override
@@ -229,7 +241,8 @@ public class JeditermConsoleView implements ConsoleView {
                 }
                 try {
                     lock.wait();
-                } catch (InterruptedException ignored) {
+                }
+                catch (InterruptedException ignored) {
                 }
             }
         }
@@ -241,9 +254,9 @@ public class JeditermConsoleView implements ConsoleView {
 
     public @Nonnull ToggleAction getScrollToTheEndToolbarAction() {
         return new ToggleAction(
-                ActionsBundle.messagePointer("action.EditorConsoleScrollToTheEnd.text"),
-                ActionsBundle.messagePointer("action.EditorConsoleScrollToTheEnd.text"),
-                AllIcons.RunConfigurations.Scroll_down) {
+            ActionLocalize.actionEditorconsolescrolltotheendText(),
+            ActionLocalize.actionEditorconsolescrolltotheendText(),
+            AllIcons.RunConfigurations.Scroll_down) {
             @Override
             public @Nonnull ActionUpdateThread getActionUpdateThread() {
                 return ActionUpdateThread.BGT;
@@ -270,9 +283,9 @@ public class JeditermConsoleView implements ConsoleView {
 
     public @Nonnull ToggleAction getPrintTimestampsToggleAction() {
         return new ToggleAction(
-                SerialMonitorLocalize.actionPrintTimestampsText(),
-                SerialMonitorLocalize.actionPrintTimestampsDescription(),
-                AllIcons.Scope.Scratches) {
+            SerialMonitorLocalize.actionPrintTimestampsText(),
+            SerialMonitorLocalize.actionPrintTimestampsDescription(),
+            PlatformIconGroup.scopeScratches()) {
             @Override
             public void update(@Nonnull AnActionEvent e) {
                 e.getPresentation().setEnabled(widget.isShowing());

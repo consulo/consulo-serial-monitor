@@ -6,6 +6,7 @@ import com.jediterm.terminal.TerminalDataStream;
 import com.jediterm.terminal.emulator.JediEmulator;
 import jakarta.annotation.Nonnull;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -55,7 +56,7 @@ public class CustomJeditermEmulator extends JediEmulator {
     }
 
     @Override
-    protected void processChar(char ch, @Nonnull Terminal terminal) {
+    public void processChar(char ch, @Nonnull Terminal terminal) throws IOException {
         maybeInsertTimestamp(ch, terminal);
         switch (ch) {
             case '\r':

@@ -4,4 +4,9 @@
  */
 module consulo.serial.monitor {
     requires consulo.ide.api;
+
+    requires com.fazecast.jSerialComm;
+    requires jediterm;
+    requires org.apache.commons.io;
+    requires forms.rt;
 }

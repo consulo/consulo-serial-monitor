@@ -12,6 +12,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import consulo.application.Application;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.execution.debug.icon.ExecutionDebugIconGroup;
 import consulo.localize.LocalizeValue;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
@@ -125,7 +126,7 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
         });
 
         Color statusColor = new JBColor(new Color(0, 255, 0), new Color(0, 255, 0));
-        Icon statusIcon = TargetAWT.to(PlatformIconGroup.debuggerThreadatbreakpoint());
+        Icon statusIcon = TargetAWT.to(ExecutionDebugIconGroup.threadThreadatbreakpoint());
 
         ctsComponent = new JLabel(statusIcon);
         ctsComponent.setToolTipText(SerialMonitorLocalize.hardwareFlowControlCtsTooltip().get());
@@ -158,7 +159,7 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
         myTopPanel.add(myHardwareControls,
                 new GridConstraints(0, 3, 1, 1, ANCHOR_EAST, FILL_NONE, SIZEPOLICY_FIXED, SIZEPOLICY_FIXED, null, null, null));
 
-        myTopPanel.setBorder(JBUI.Borders.customLineBottom(JBColor.border()));
+        myTopPanel.setBorder(new CustomLineBorder(1, 1, 1, 1));
 
         myPanel.add(toolbar.getComponent(),
                 new GridConstraints(0, 0, 2, 1, ANCHOR_WEST, FILL_VERTICAL, SIZEPOLICY_FIXED, SIZE_POLICY_RESIZEABLE, null, null, null));
@@ -265,7 +266,7 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
         dsrComponent.setEnabled(state);
     }
 
-    public static void errorNotification(@Nonnull String content, @Nullable Project project) {
+    public static void errorNotification(@Nonnull String content, @Nonnull Project project) {
         NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup(SERIAL_NOTIFICATION_GROUP_NAME);
         if (notificationGroup != null) {
             notificationGroup.createNotification(content, NotificationType.ERROR).notify(project);

@@ -6,8 +6,8 @@ import com.intellij.plugins.serialmonitor.SerialProfileService;
 import com.intellij.plugins.serialmonitor.StopBits;
 import com.intellij.plugins.serialmonitor.service.PortStatus;
 import com.intellij.plugins.serialmonitor.service.SerialPortService;
+import consulo.application.ApplicationPropertiesComponent;
 import consulo.disposer.Disposable;
-import consulo.ide.impl.idea.ide.util.PropertiesComponent;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.Hyperlink;
 import consulo.ui.ex.InputValidator;
@@ -258,13 +258,9 @@ public final class SerialSettingsPanel {
             buttonsRow.add(openConsoleButton);
         }
 
-        JButton duplicateLink = new JButton(SerialMonitorLocalize.linkLabelDuplicateProfile().get());
-        duplicateLink.setBorderPainted(false);
-        duplicateLink.setContentAreaFilled(false);
-        duplicateLink.setForeground(JBUI.CurrentTheme.Link.Foreground.ENABLED);
-        duplicateLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        duplicateLink.addActionListener(e -> createNewProfile(connectableList, profileName, null));
-        buttonsRow.add(duplicateLink);
+        Hyperlink duplicateLink = Hyperlink.create(SerialMonitorLocalize.linkLabelDuplicateProfile());
+        duplicateLink.addHyperlinkListener(e -> createNewProfile(connectableList, profileName, null));
+        buttonsRow.add(TargetAWT.to(duplicateLink));
 
         panel.add(buttonsRow);
 
@@ -410,7 +406,7 @@ public final class SerialSettingsPanel {
     }
 
     private static boolean showReconnectDialog(@Nonnull SerialPortProfile profile, @Nonnull String profileName, @Nullable Component parentComponent) {
-        boolean doNotShowDialog = PropertiesComponent.getInstance().getBoolean(RECONNECT_PROFILE_DIALOG_KEY);
+        boolean doNotShowDialog = ApplicationPropertiesComponent.getInstance().getBoolean(RECONNECT_PROFILE_DIALOG_KEY);
         if (doNotShowDialog) {
             return true;
         }
@@ -421,10 +417,10 @@ public final class SerialSettingsPanel {
         return MessageDialogBuilder.okCancel(title, description)
             .yesText(SerialMonitorLocalize.buttonReconnect().get())
             .icon(Messages.getQuestionIcon())
-            .doNotAsk(new DoNotAskOption.Adapter() {
+            .doNotAsk(new DialogWrapper.DoNotAskOption.Adapter() {
                 @Override
                 public void rememberChoice(boolean isSelected, int exitCode) {
-                    PropertiesComponent.getInstance().setValue(RECONNECT_PROFILE_DIALOG_KEY, isSelected);
+                    ApplicationPropertiesComponent.getInstance().setValue(RECONNECT_PROFILE_DIALOG_KEY, isSelected);
                 }
             })
             .ask(parentComponent);
