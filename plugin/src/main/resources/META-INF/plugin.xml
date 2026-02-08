@@ -2,6 +2,10 @@
     <id>consulo.serial.monitor</id>
     <name>Serial Port Monitor</name>
     <vendor>JetBrains</vendor>
+    <vendors>
+        <vendor>JetBrains</vendor>
+        <vendor>consulo.io</vendor>
+    </vendors>
     <description><![CDATA[
       This plugin provides the Serial Monitor Tool Window,
       which allows you to communicate to serial devices like Arduino via the IDE window.
@@ -17,4 +21,8 @@
       Initial release by <a href="https://github.com/dmitry-cherkas">Dmitry Cherkas</a>
 
     ]]></description>
+    <tags>
+        <tag>tools</tag>
+    </tags>
+    <version>SNAPSHOT</version>
 </consulo-plugin>
