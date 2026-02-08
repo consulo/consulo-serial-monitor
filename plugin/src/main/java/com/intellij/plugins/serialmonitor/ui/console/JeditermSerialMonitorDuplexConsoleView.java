@@ -14,7 +14,7 @@ import consulo.application.dumb.DumbAware;
 import consulo.codeEditor.Editor;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.execution.internal.action.ScrollToTheEndToolbarAction;
+import consulo.execution.action.ScrollToTheEndToolbarAction;
 import consulo.execution.localize.ExecutionLocalize;
 import consulo.execution.ui.console.ConsoleView;
 import consulo.execution.ui.console.DuplexConsoleView;
@@ -167,7 +167,7 @@ public class JeditermSerialMonitorDuplexConsoleView extends DuplexConsoleView<Je
             }
         }
         catch (SerialMonitorException sme) {
-            SerialMonitor.Companion.errorNotification(sme.getMessage(), this);
+            SerialMonitor.errorNotification(sme.getMessage(), myProject);
         }
     }
 

@@ -1,8 +1,10 @@
 package com.intellij.plugins.serialmonitor.service;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.TopicAPI;
 import jakarta.annotation.Nonnull;
 
-@FunctionalInterface
+@TopicAPI(ComponentScope.APPLICATION)
 public interface SerialPortsListener {
 
     @Nonnull

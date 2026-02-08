@@ -1,6 +1,5 @@
 package com.intellij.plugins.serialmonitor.service;
 
-import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.serial.monitor.icon.SerialMonitorIconGroup;
 import consulo.ui.image.Image;
 import jakarta.annotation.Nonnull;
@@ -11,7 +10,7 @@ public enum PortStatus {
     BUSY(SerialMonitorIconGroup.invalid()),
     CONNECTING(SerialMonitorIconGroup.invalid()),
     DISCONNECTED(SerialMonitorIconGroup.connectpassive()),
-    READY(PlatformIconGroup.nodesEmptynode()),
+    READY(Image.empty(Image.DEFAULT_ICON_SIZE)),
     CONNECTED(SerialMonitorIconGroup.connectactive());
 
     private final Image icon;

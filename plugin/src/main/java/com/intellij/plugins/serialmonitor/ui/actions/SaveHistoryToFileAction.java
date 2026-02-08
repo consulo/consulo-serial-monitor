@@ -7,6 +7,8 @@ import consulo.application.AllIcons;
 import consulo.application.Application;
 import consulo.fileChooser.FileChooserFactory;
 import consulo.fileChooser.FileSaverDescriptor;
+import consulo.platform.base.icon.PlatformIconGroup;
+import consulo.project.Project;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
@@ -29,7 +31,8 @@ public class SaveHistoryToFileAction extends DumbAwareAction {
     public SaveHistoryToFileAction(@Nonnull TerminalTextBuffer terminalTextBuffer, @Nonnull SerialPortProfile serialPortProfile) {
         super(SerialMonitorLocalize.actionSaveText(),
             SerialMonitorLocalize.actionSaveDescription(),
-            AllIcons.Actions.MenuSaveall);
+            PlatformIconGroup.actionsMenu_saveall()
+        );
         this.terminalTextBuffer = terminalTextBuffer;
         this.serialPortProfile = serialPortProfile;
     }
@@ -48,8 +51,8 @@ public class SaveHistoryToFileAction extends DumbAwareAction {
         );
 
         VirtualFileWrapper wrapper = FileChooserFactory.getInstance()
-                .createSaveFileDialog(descriptor, e.getProject())
-                .save(defaultLogFilename());
+                .createSaveFileDialog(descriptor, e.getData(Project.KEY))
+                .save(null, defaultLogFilename());
 
         if (wrapper == null) return;
         File file = wrapper.getFile();

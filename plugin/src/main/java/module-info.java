@@ -9,4 +9,6 @@ module consulo.serial.monitor {
     requires jediterm;
     requires org.apache.commons.io;
     requires forms.rt;
+
+    opens com.intellij.plugins.serialmonitor to consulo.util.xml.serializer;
 }

@@ -44,7 +44,7 @@ public class EditSettingsAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(@Nonnull AnActionEvent e) {
-        SettingsDialog settingsDialog = new SettingsDialog(e.getProject());
+        SettingsDialog settingsDialog = new SettingsDialog(e.getData(Project.KEY));
         boolean okClicked = settingsDialog.showAndGet();
         if (okClicked) {
             serialMonitor.notifyProfileChanged();

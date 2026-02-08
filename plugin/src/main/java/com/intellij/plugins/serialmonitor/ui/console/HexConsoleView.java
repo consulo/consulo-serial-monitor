@@ -11,8 +11,7 @@ public class HexConsoleView implements Disposable {
 
     public static final int LINE_LENGTH = 32;
     public static final int SEQUENCE_LENGTH = 8;
-    private final char[] hexChar = {'0', '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private final char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     private final StringBuffer lineBuffer = new StringBuffer();
 

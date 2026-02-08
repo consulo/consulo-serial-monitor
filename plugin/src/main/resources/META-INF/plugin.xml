@@ -1,8 +1,7 @@
 <consulo-plugin url="https://github.com/consulo/consulo-serial-monitor">
     <id>consulo.serial.monitor</id>
     <name>Serial Port Monitor</name>
-    <category>Embedded Development</category>
-    <vendor>Consulo</vendor>
+    <vendor>JetBrains</vendor>
     <description><![CDATA[
       This plugin provides the Serial Monitor Tool Window,
       which allows you to communicate to serial devices like Arduino via the IDE window.
@@ -18,14 +17,4 @@
       Initial release by <a href="https://github.com/dmitry-cherkas">Dmitry Cherkas</a>
 
     ]]></description>
-
-    <extensions defaultExtensionNs="consulo">
-        <toolWindow id="Serial Monitor" anchor="bottom" secondary="true"
-                    factoryClass="com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory"
-                    icon="consulo.serial.monitor.SerialMonitorIconGroup/disconnectedSerial"/>
-
-        <notificationGroup id="Serial Monitor Notification" toolWindowId="Serial Monitor" displayType="TOOL_WINDOW"
-                           bundle="messages.SerialMonitorBundle" key="notification.group.serial.monitor.notification"/>
-    </extensions>
-    <resource-bundle>messages.SerialMonitorBundle</resource-bundle>
 </consulo-plugin>

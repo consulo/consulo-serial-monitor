@@ -21,8 +21,7 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
   private final @Nonnull JeditermSerialMonitorDuplexConsoleView myConsoleView;
 
   public ConnectDisconnectAction(@Nonnull JeditermSerialMonitorDuplexConsoleView consoleView) {
-    super(SerialMonitorLocalize.connectTitle(),
-          SerialMonitorLocalize.connectTooltip(), SerialMonitorIconGroup.connectactive());
+    super(SerialMonitorLocalize.connectTitle(), SerialMonitorLocalize.connectTooltip(), SerialMonitorIconGroup.connectactive());
     myConsoleView = consoleView;
   }
 

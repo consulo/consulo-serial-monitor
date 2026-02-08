@@ -5,15 +5,11 @@ import com.intellij.plugins.serialmonitor.service.PortStatus;
 import com.intellij.plugins.serialmonitor.service.SerialPortsListener;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.action.ActionPlaces;
 import consulo.ui.ex.action.ActionToolbar;
-import consulo.ui.ex.awt.JBPanel;
-import consulo.ui.ex.awt.JBScrollPane;
-import consulo.ui.ex.awt.OnePixelSplitter;
-import consulo.ui.ex.awt.SimpleToolWindowPanel;
+import consulo.ui.ex.awt.*;
 import consulo.ui.ex.content.Content;
 import consulo.ui.ex.content.ContentManager;
 import consulo.ui.ex.toolWindow.ToolWindow;
@@ -69,20 +65,19 @@ public class ConnectPanel extends OnePixelSplitter {
         }
         Disposer.dispose(disposable);
         disposable = Disposable.newDisposable("Serial Profile Parameters");
-        Disposer.register(toolWindow.getDisposable(), disposable);
+        Disposer.register(toolWindow.getContentManager(), disposable);
 
         String portName = ports.getSelectedPortName();
         JPanel panel;
         if (portName != null) {
-            panel = SerialSettingsPanel.portSettings(ports, portName, disposable);
+            panel = SerialSettingsPanel.portSettings(ports, portName, disposable, myProject);
         }
         else {
-            panel = SerialSettingsPanel.profileSettings(ports, disposable);
+            panel = SerialSettingsPanel.profileSettings(ports, disposable, myProject);
         }
 
         if (panel != null) {
-            JBScrollPane scrollPane = new JBScrollPane(panel);
-            scrollPane.setBorder(null);
+            JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(new BorderLayoutPanel().addToTop(panel), true);
             setSecondComponent(scrollPane);
             invalidate();
         }

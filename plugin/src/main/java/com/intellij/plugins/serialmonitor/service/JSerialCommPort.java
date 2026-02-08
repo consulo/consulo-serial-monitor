@@ -6,6 +6,7 @@ import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 import com.intellij.plugins.serialmonitor.Parity;
 import com.intellij.plugins.serialmonitor.SerialPortProfile;
 import com.intellij.plugins.serialmonitor.StopBits;
+import consulo.localize.LocalizeValue;
 import consulo.platform.Platform;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import jakarta.annotation.Nonnull;
@@ -45,8 +46,8 @@ public class JSerialCommPort implements SerialPort {
 
     @Override
     public void connect(@Nonnull SerialPortProfile profile, @Nonnull SerialPortListener listener, boolean rts, boolean dtr) throws SerialPortException {
-        checkSuccess(setRTSInternal(rts), () -> SerialMonitorLocalize.serialPortRtsInitFailed().get());
-        checkSuccess(setDTRInternal(dtr), () -> SerialMonitorLocalize.serialPortDtrInitFailed().get());
+        checkSuccess(setRTSInternal(rts), SerialMonitorLocalize.serialPortRtsInitFailed());
+        checkSuccess(setDTRInternal(dtr), SerialMonitorLocalize.serialPortDtrInitFailed());
 
         if (!addListener(listener)) {
             throw new SerialPortException(SerialMonitorLocalize.serialPortListenerFailed().get());
@@ -56,10 +57,10 @@ public class JSerialCommPort implements SerialPort {
         int portParity = convertParity(profile.getParity());
         checkSuccess(
             serialPort.setComPortParameters(profile.getBaudRate(), profile.getBits(), portStopBits, portParity),
-            () -> SerialMonitorLocalize.serialPortParametersWrong().get()
+            SerialMonitorLocalize.serialPortParametersWrong()
         );
 
-        checkSuccess(serialPort.openPort(), () -> SerialMonitorLocalize.serialPortOpenFailed().get());
+        checkSuccess(serialPort.openPort(), SerialMonitorLocalize.serialPortOpenFailed());
     }
 
     private int convertParity(@Nonnull Parity parity) {
@@ -80,8 +81,7 @@ public class JSerialCommPort implements SerialPort {
 
     @Override
     public void disconnect() throws SerialPortException {
-        checkSuccess(serialPort.closePort(),
-            () -> SerialMonitorLocalize.portCloseError(serialPort.getSystemPortName(), "").get());
+        checkSuccess(serialPort.closePort(), SerialMonitorLocalize.portCloseError(serialPort.getSystemPortName(), ""));
     }
 
     @Override
@@ -91,12 +91,12 @@ public class JSerialCommPort implements SerialPort {
 
     @Override
     public void setRTS(boolean value) throws SerialPortException {
-        checkSuccess(setRTSInternal(value), () -> SerialMonitorLocalize.serialPortRtsUpdateFailed().get());
+        checkSuccess(setRTSInternal(value), SerialMonitorLocalize.serialPortRtsUpdateFailed());
     }
 
     @Override
     public void setDTR(boolean value) throws SerialPortException {
-        checkSuccess(setDTRInternal(value), () -> SerialMonitorLocalize.serialPortDtrUpdateFailed().get());
+        checkSuccess(setDTRInternal(value), SerialMonitorLocalize.serialPortDtrUpdateFailed());
     }
 
     private boolean setRTSInternal(boolean value) {
@@ -144,7 +144,7 @@ public class JSerialCommPort implements SerialPort {
         });
     }
 
-    private void checkSuccess(boolean success, @Nonnull java.util.function.Supplier<String> lazyMessage) throws SerialPortException {
+    private void checkSuccess(boolean success, @Nonnull LocalizeValue lazyMessage) throws SerialPortException {
         if (!success) {
             throw new SerialPortException(lazyMessage.get());
         }

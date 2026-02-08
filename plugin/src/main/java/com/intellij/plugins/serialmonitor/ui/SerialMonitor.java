@@ -1,6 +1,7 @@
 package com.intellij.plugins.serialmonitor.ui;
 
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
+import com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory;
 import com.intellij.plugins.serialmonitor.SerialPortProfile;
 import com.intellij.plugins.serialmonitor.service.PortStatus;
 import com.intellij.plugins.serialmonitor.service.SerialPortService;
@@ -14,12 +15,13 @@ import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.execution.debug.icon.ExecutionDebugIconGroup;
 import consulo.localize.LocalizeValue;
-import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
-import consulo.project.ui.util.ProjectUIUtil;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
+import consulo.ui.Button;
+import consulo.ui.Point2D;
+import consulo.ui.event.details.InputDetails;
 import consulo.ui.ex.JBColor;
 import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.action.ActionPlaces;
@@ -28,10 +30,10 @@ import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awtUnsafe.TargetAWT;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -39,16 +41,17 @@ import java.awt.event.KeyEvent;
 import static com.intellij.uiDesigner.core.GridConstraints.*;
 
 public class SerialMonitor implements Disposable, SerialPortsListener {
+    public static final NotificationGroup NOTIFICATION_GROUP =
+        NotificationGroup.toolWindowGroup("SERIAL_MONITOR_NOTIFICATION", SerialMonitorLocalize.notificationGroupSerialMonitorNotification(), SerialMonitorToolWindowFactory.ID);
 
     private static final String HISTORY_KEY = "serialMonitor.commands";
-    private static final String SERIAL_NOTIFICATION_GROUP_NAME = "Serial Monitor Notification";
     private static final int SIZE_POLICY_RESIZEABLE = SIZEPOLICY_CAN_GROW + SIZEPOLICY_CAN_SHRINK + SIZEPOLICY_WANT_GROW;
 
     private final Project project;
     private final SerialPortProfile portProfile;
     private final JBLoadingPanel myPanel;
     private final JBPanel<JBPanel<?>> myTopPanel;
-    private final JButton mySend;
+    private final Button mySend;
     private final TextFieldWithStoredHistory myCommand;
     private final JBCheckBox myLineEnd;
     private final JPanel myHardwareControls;
@@ -60,10 +63,10 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
         this.project = project;
         this.portProfile = portProfile;
 
-        this.myPanel = new JBLoadingPanel(new GridLayoutManager(2, 2, JBUI.emptyInsets(), 0, 0), this, 300);
-        this.myTopPanel = new JBPanel<>(new GridLayoutManager(1, 4, JBUI.insets(5, 10), 5, 0));
+        myPanel = new JBLoadingPanel(new GridLayoutManager(2, 2, JBUI.emptyInsets(), 0, 0), this, 300);
+        myTopPanel = new JBPanel<>(new GridLayoutManager(1, 4, JBUI.insets(5, 10), 5, 0));
 
-        myPanel.setLoadingText(SerialMonitorLocalize.connecting().get());
+        myPanel.setLoadingText(SerialMonitorLocalize.connecting());
         duplexConsoleView = JeditermSerialMonitorDuplexConsoleView.create(project, portProfile, myPanel);
         Disposer.register(this, duplexConsoleView);
 
@@ -83,16 +86,16 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
             public void keyPressed(KeyEvent e) {
                 if (e.isControlDown() && e.getKeyChar() == KeyEvent.VK_ENTER) {
                     myCommand.hidePopup();
-                    mySend.doClick();
+                    mySend.invoke(new InputDetails(new Point2D(0, 0), new Point2D(0, 0)));
                 }
             }
         });
 
         myLineEnd = new JBCheckBox(SerialMonitorLocalize.checkboxSendEol().get(), true);
 
-        mySend = new JButton(SerialMonitorLocalize.sendTitle().get());
+        mySend = Button.create(SerialMonitorLocalize.sendTitle());
         mySend.setEnabled(false);
-        mySend.addActionListener(e -> {
+        mySend.addClickListener(e -> {
             send(myCommand.getText());
             myCommand.addCurrentTextToHistory();
             myCommand.setText("");
@@ -154,12 +157,12 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
                 new GridConstraints(0, 0, 1, 1, ANCHOR_WEST, FILL_HORIZONTAL, SIZE_POLICY_RESIZEABLE, SIZEPOLICY_FIXED, null, null, null));
         myTopPanel.add(myLineEnd,
                 new GridConstraints(0, 1, 1, 1, ANCHOR_EAST, FILL_NONE, SIZEPOLICY_FIXED, SIZEPOLICY_FIXED, null, null, null));
-        myTopPanel.add(mySend,
+        myTopPanel.add(TargetAWT.to(mySend),
                 new GridConstraints(0, 2, 1, 1, ANCHOR_EAST, FILL_NONE, SIZEPOLICY_FIXED, SIZEPOLICY_FIXED, null, null, null));
         myTopPanel.add(myHardwareControls,
                 new GridConstraints(0, 3, 1, 1, ANCHOR_EAST, FILL_NONE, SIZEPOLICY_FIXED, SIZEPOLICY_FIXED, null, null, null));
 
-        myTopPanel.setBorder(new CustomLineBorder(1, 1, 1, 1));
+        myTopPanel.setBorder(new CustomLineBorder(1, 0, 1, 1));
 
         myPanel.add(toolbar.getComponent(),
                 new GridConstraints(0, 0, 2, 1, ANCHOR_WEST, FILL_VERTICAL, SIZEPOLICY_FIXED, SIZE_POLICY_RESIZEABLE, null, null, null));
@@ -239,7 +242,7 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
     }
 
     private Border toolbarBorder() {
-        return JBUI.Borders.compound(JBUI.Borders.customLineRight(JBColor.border()), JBUI.Borders.empty(9));
+        return new CompoundBorder(JBUI.Borders.customLineRight(JBColor.border()), JBUI.Borders.empty(2));
     }
 
     private void updateHardwareVisibility() {
@@ -267,19 +270,6 @@ public class SerialMonitor implements Disposable, SerialPortsListener {
     }
 
     public static void errorNotification(@Nonnull String content, @Nonnull Project project) {
-        NotificationGroup notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup(SERIAL_NOTIFICATION_GROUP_NAME);
-        if (notificationGroup != null) {
-            notificationGroup.createNotification(content, NotificationType.ERROR).notify(project);
-        }
-    }
-
-    public static void errorNotification(@Nonnull String content, @Nonnull Component component) {
-        errorNotification(content, ProjectUIUtil.getProjectForComponent(component));
-    }
-
-    public static class Companion {
-        public static void errorNotification(@Nonnull String content, @Nonnull Component component) {
-            SerialMonitor.errorNotification(content, component);
-        }
+        NOTIFICATION_GROUP.createNotification(content, NotificationType.ERROR).notify(project);
     }
 }

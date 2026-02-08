@@ -264,7 +264,7 @@ public class JeditermConsoleView implements ConsoleView {
 
             @Override
             public boolean isSelected(@Nonnull AnActionEvent e) {
-                return widget.getTerminalPanel().getVerticalScrollModel().getValue() == 0;
+                return widget.getTerminalVerticalScrollModel().getValue() == 0;
             }
 
             @Override
@@ -275,7 +275,7 @@ public class JeditermConsoleView implements ConsoleView {
             @Override
             public void setSelected(@Nonnull AnActionEvent e, boolean state) {
                 if (state) {
-                    widget.getTerminalPanel().getVerticalScrollModel().setValue(0);
+                    widget.getTerminalVerticalScrollModel().setValue(0);
                 }
             }
         };

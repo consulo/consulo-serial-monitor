@@ -8,6 +8,7 @@ import com.intellij.plugins.serialmonitor.service.PortStatus;
 import com.intellij.plugins.serialmonitor.service.SerialPortService;
 import consulo.application.ApplicationPropertiesComponent;
 import consulo.disposer.Disposable;
+import consulo.project.Project;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.Hyperlink;
 import consulo.ui.ex.InputValidator;
@@ -104,7 +105,10 @@ public final class SerialSettingsPanel {
         }
     }
 
-    public static @Nullable JPanel portSettings(@Nonnull ConnectableList connectableList, @Nonnull String portName, @Nonnull Disposable disposable) {
+    public static @Nullable JPanel portSettings(@Nonnull ConnectableList connectableList,
+                                                @Nonnull String portName,
+                                                @Nonnull Disposable disposable,
+                                                @Nonnull Project project) {
         ConnectPanel parentPanel = connectableList.getParentPanel();
         SerialMonitor monitor = parentPanel.getOpenedMonitor(portName);
         boolean openedInParentPanel = monitor != null;
@@ -156,7 +160,7 @@ public final class SerialSettingsPanel {
             reconnectButton.addActionListener(e -> {
                 SerialPortProfile p = profileService.copyDefaultProfile(portName);
                 String name = p.defaultName();
-                if (showReconnectDialog(p, name, parentPanel)) {
+                if (showReconnectDialog(p, name, project)) {
                     parentPanel.reconnectProfile(p, name);
                 }
             });
@@ -173,7 +177,7 @@ public final class SerialSettingsPanel {
         return panel;
     }
 
-    public static @Nullable JPanel profileSettings(@Nonnull ConnectableList connectableList, @Nonnull Disposable disposable) {
+    public static @Nullable JPanel profileSettings(@Nonnull ConnectableList connectableList, @Nonnull Disposable disposable, @Nonnull Project project) {
         ConnectableList.Pair<String, SerialPortProfile> selectedProfile = connectableList.getSelectedProfile();
         if (selectedProfile == null || selectedProfile.getSecond() == null) {
             return null;
@@ -190,7 +194,7 @@ public final class SerialSettingsPanel {
         SerialProfileService profileService = SerialProfileService.getInstance();
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new VerticalFlowLayout(5));
         panel.setBorder(JBUI.Borders.empty(10));
 
         // Profile name row
@@ -239,7 +243,7 @@ public final class SerialSettingsPanel {
         if (!isProfileConnectVisible(status) && !isUsed) {
             JButton reconnectButton = new JButton(SerialMonitorLocalize.buttonReconnect().get());
             reconnectButton.addActionListener(e -> {
-                if (showReconnectDialog(profile, profileName, parentPanel)) {
+                if (showReconnectDialog(profile, profileName, project)) {
                     parentPanel.reconnectProfile(profile, profileName);
                 }
             });
@@ -405,7 +409,9 @@ public final class SerialSettingsPanel {
         panel.add(row4);
     }
 
-    private static boolean showReconnectDialog(@Nonnull SerialPortProfile profile, @Nonnull String profileName, @Nullable Component parentComponent) {
+    private static boolean showReconnectDialog(@Nonnull SerialPortProfile profile,
+                                               @Nonnull String profileName,
+                                               @Nonnull Project project) {
         boolean doNotShowDialog = ApplicationPropertiesComponent.getInstance().getBoolean(RECONNECT_PROFILE_DIALOG_KEY);
         if (doNotShowDialog) {
             return true;
@@ -423,7 +429,8 @@ public final class SerialSettingsPanel {
                     ApplicationPropertiesComponent.getInstance().setValue(RECONNECT_PROFILE_DIALOG_KEY, isSelected);
                 }
             })
-            .ask(parentComponent);
+            .project(project)
+            .isOk();
     }
 
     private static boolean isProfileConnectVisible(@Nonnull PortStatus status) {

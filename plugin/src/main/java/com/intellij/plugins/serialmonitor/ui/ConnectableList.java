@@ -195,7 +195,7 @@ public class ConnectableList extends JBList<Object> {
         });
 
         ListSpeedSearch.installOn(this, item -> item instanceof Connectable c ? c.getEntityName() : null);
-        PopupHandler.installPopupMenu(this, toolbarActions, ActionPlaces.POPUP);
+        PopupHandler.installPopupHandler(this, ActionGroup.newImmutableBuilder().addAll(toolbarActions).build(), ActionPlaces.POPUP);
 
         // Subscribe to port status changes and update model
         Application.get().getMessageBus().connect()
