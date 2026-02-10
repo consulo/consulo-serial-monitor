@@ -18,6 +18,7 @@ import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.PopupHandler;
 import consulo.ui.ex.awt.speedSearch.ListSpeedSearch;
 import consulo.ui.image.Image;
+import consulo.util.lang.Pair;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -284,24 +285,6 @@ public class ConnectableList extends JBList<Object> {
 
     @Nonnull ConnectPanel getParentPanel() {
         return parentPanel;
-    }
-
-    public static class Pair<K, V> {
-        private final K first;
-        private final V second;
-
-        public Pair(K first, V second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        public K getFirst() {
-            return first;
-        }
-
-        public V getSecond() {
-            return second;
-        }
     }
 
     // Inner classes for Connectable items

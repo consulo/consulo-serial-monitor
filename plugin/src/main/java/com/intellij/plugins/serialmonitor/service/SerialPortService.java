@@ -6,19 +6,18 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
 import consulo.application.Application;
+import consulo.application.concurrent.ApplicationConcurrency;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.logging.Logger;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 @Singleton
@@ -30,7 +29,8 @@ public final class SerialPortService implements Disposable {
 
     private volatile Set<String> portNames = Collections.emptySet();
     private final Map<String, SerialConnection> connections = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    private Future<?> myScanTask = CompletableFuture.completedFuture(null);
 
     private final Comparator<String> NAME_COMPARATOR = (name1, name2) -> {
         int[] split1 = splitName(name1);
@@ -45,8 +45,9 @@ public final class SerialPortService implements Disposable {
         return Application.get().getInstance(SerialPortService.class);
     }
 
-    public SerialPortService() {
-        scheduler.scheduleWithFixedDelay(this::rescanPorts, 0, 500, TimeUnit.MILLISECONDS);
+    @Inject
+    public SerialPortService(ApplicationConcurrency applicationConcurrency) {
+        myScanTask = applicationConcurrency.getScheduledExecutorService().scheduleWithFixedDelay(this::rescanPorts, 1, 1, TimeUnit.SECONDS);
     }
 
     private int[] splitName(@Nonnull String s) {
@@ -96,8 +97,10 @@ public final class SerialPortService implements Disposable {
             }
         }
 
-        portNames = portList;
-        portMessageTopic().portsStatusChanged();
+        if (!oldPorts.equals(portList)) {
+            portNames = portList;
+            portMessageTopic().portsStatusChanged();
+        }
     }
 
     private @Nonnull SerialPortsListener portMessageTopic() {
@@ -137,7 +140,7 @@ public final class SerialPortService implements Disposable {
 
     @Override
     public void dispose() {
-        scheduler.shutdownNow();
+        myScanTask.cancel(false);
     }
 
     public class SerialConnection implements Disposable {

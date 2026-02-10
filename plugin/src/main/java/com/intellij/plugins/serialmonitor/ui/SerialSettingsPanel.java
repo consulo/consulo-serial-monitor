@@ -15,6 +15,7 @@ import consulo.ui.ex.InputValidator;
 import consulo.ui.ex.InputValidatorEx;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.util.lang.Pair;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -178,7 +179,7 @@ public final class SerialSettingsPanel {
     }
 
     public static @Nullable JPanel profileSettings(@Nonnull ConnectableList connectableList, @Nonnull Disposable disposable, @Nonnull Project project) {
-        ConnectableList.Pair<String, SerialPortProfile> selectedProfile = connectableList.getSelectedProfile();
+        Pair<String, SerialPortProfile> selectedProfile = connectableList.getSelectedProfile();
         if (selectedProfile == null || selectedProfile.getSecond() == null) {
             return null;
         }
