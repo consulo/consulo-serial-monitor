@@ -1,6 +1,7 @@
 package com.intellij.plugins.serialmonitor.ui.actions;
 
 import com.intellij.plugins.serialmonitor.SerialPortProfile;
+import com.jediterm.terminal.model.LinesStorage;
 import com.jediterm.terminal.model.TerminalLine;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import consulo.application.AllIcons;
@@ -12,6 +13,7 @@ import consulo.project.Project;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
+import consulo.util.collection.ContainerUtil;
 import consulo.virtualFileSystem.VirtualFileWrapper;
 import jakarta.annotation.Nonnull;
 
@@ -61,11 +63,15 @@ public class SaveHistoryToFileAction extends DumbAwareAction {
             List<TerminalLine> lines;
             try {
                 terminalTextBuffer.lock();
-                List<TerminalLine> historyLines = terminalTextBuffer.getHistoryLinesStorage();
-                List<TerminalLine> screenLines = terminalTextBuffer.getScreenLinesStorage();
+                LinesStorage historyLines = terminalTextBuffer.getHistoryLinesStorage();
+                LinesStorage screenLines = terminalTextBuffer.getScreenLinesStorage();
                 lines = new ArrayList<>(historyLines.size() + screenLines.size());
-                lines.addAll(historyLines);
-                lines.addAll(screenLines);
+                for (TerminalLine historyLine : terminalTextBuffer.getHistoryLinesStorage()) {
+                    lines.add(historyLine);
+                }
+                for (TerminalLine screenLine : screenLines) {
+                    lines.add(screenLine);
+                }
             } finally {
                 terminalTextBuffer.unlock();
             }

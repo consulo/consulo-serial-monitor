@@ -1,6 +1,7 @@
 package com.intellij.plugins.serialmonitor.ui.console;
 
 import com.intellij.plugins.serialmonitor.service.SerialPortService;
+import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import jakarta.annotation.Nonnull;
@@ -59,8 +60,17 @@ public class SerialTtyConnector implements TtyConnector {
     }
 
     @Override
+    public void resize(TermSize termSize) {
+    }
+
+    @Override
     public int waitFor() {
         return 0;
+    }
+
+    @Override
+    public boolean ready() throws IOException {
+        return true;
     }
 
     @Override
@@ -69,16 +79,6 @@ public class SerialTtyConnector implements TtyConnector {
     }
 
     @Override
-    public boolean init(Questioner questioner) {
-        return false;
-    }
-
-    @Override
     public void close() {
-    }
-
-    @Override
-    public void resize(Dimension dimension, Dimension dimension1) {
-
     }
 }

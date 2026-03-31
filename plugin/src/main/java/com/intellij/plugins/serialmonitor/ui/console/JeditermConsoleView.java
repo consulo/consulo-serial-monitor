@@ -122,9 +122,7 @@ public class JeditermConsoleView implements ConsoleView {
 
     @Override
     public void clear() {
-        widget.getTerminalTextBuffer().clearAll();
-        widget.getTerminalTextBuffer().clearHistory();
-        //widget.getTerminalTextBuffer().clearScreenAndHistoryBuffers();
+        widget.getTerminalTextBuffer().clearScreenAndHistoryBuffers();
         widget.getTerminal().clearScreen();
         widget.getTerminal().cursorPosition(0, 1);
     }
