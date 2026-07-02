@@ -10,6 +10,7 @@ import consulo.localize.LocalizeValue;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.serial.monitor.icon.SerialMonitorIconGroup;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.SimpleTextAttributes;
 import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.ColoredListCellRenderer;
@@ -46,6 +47,7 @@ public class ConnectableList extends JBList<Object> {
                 registerCustomShortcutSet(CommonShortcuts.getDelete(), ConnectableList.this);
             }
 
+            @RequiredUIAccess
             @Override
             public void actionPerformed(@Nonnull AnActionEvent e) {
                 Object selected = getSelectedValue();
@@ -72,6 +74,7 @@ public class ConnectableList extends JBList<Object> {
                 registerCustomShortcutSet(CommonShortcuts.getDuplicate(), ConnectableList.this);
             }
 
+            @RequiredUIAccess
             @Override
             public void actionPerformed(@Nonnull AnActionEvent e) {
                 Object selected = getSelectedValue();
@@ -86,6 +89,7 @@ public class ConnectableList extends JBList<Object> {
                 registerCustomShortcutSet(CommonShortcuts.getNew(), ConnectableList.this);
             }
 
+            @RequiredUIAccess
             @Override
             public void actionPerformed(@Nonnull AnActionEvent e) {
                 String portName = getSelectedPortName();
@@ -94,14 +98,10 @@ public class ConnectableList extends JBList<Object> {
         };
 
         this.defaultActions = new AnAction[]{
-                new DumbAwareAction(SerialMonitorLocalize.actionConnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.connectpassive()) {
+                new LegacyDumbAwareAction(SerialMonitorLocalize.actionConnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.connectpassive()) {
+                    @RequiredUIAccess
                     @Override
                     public void actionPerformed(@Nonnull AnActionEvent e) {
-                    }
-
-                    @Override
-                    public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                        return ActionUpdateThread.EDT;
                     }
 
                     @Override
@@ -303,51 +303,39 @@ public class ConnectableList extends JBList<Object> {
             this.status = status;
             this.isUsed = isUsed;
 
-            this.disconnectAction = new DumbAwareAction(SerialMonitorLocalize.actionDisconnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.disconnect()) {
+            this.disconnectAction = new LegacyDumbAwareAction(SerialMonitorLocalize.actionDisconnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.disconnect()) {
+                @RequiredUIAccess
                 @Override
                 public void actionPerformed(@Nonnull AnActionEvent e) {
                     parentPanel.disconnectPort(getPortName());
                 }
 
                 @Override
-                public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                    return ActionUpdateThread.BGT;
-                }
-
-                @Override
                 public void update(@Nonnull AnActionEvent e) {
                     e.getPresentation().setEnabled(Connectable.this.isUsed);
                 }
             };
 
-            this.openConsole = new DumbAwareAction(SerialMonitorLocalize.actionOpenConsoleText(), LocalizeValue.empty(), PlatformIconGroup.generalOpennewtab()) {
+            this.openConsole = new LegacyDumbAwareAction(SerialMonitorLocalize.actionOpenConsoleText(), LocalizeValue.empty(), PlatformIconGroup.generalOpennewtab()) {
+                @RequiredUIAccess
                 @Override
                 public void actionPerformed(@Nonnull AnActionEvent e) {
                     parentPanel.openConsole(getPortName());
                 }
 
                 @Override
-                public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                    return ActionUpdateThread.BGT;
-                }
-
-                @Override
                 public void update(@Nonnull AnActionEvent e) {
                     e.getPresentation().setEnabled(Connectable.this.isUsed);
                 }
             };
 
-            this.connectAction = new DumbAwareAction(SerialMonitorLocalize.actionConnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.connectactive()) {
+            this.connectAction = new LegacyDumbAwareAction(SerialMonitorLocalize.actionConnectText(), LocalizeValue.empty(), SerialMonitorIconGroup.connectactive()) {
+                @RequiredUIAccess
                 @Override
                 public void actionPerformed(@Nonnull AnActionEvent e) {
                     if (Connectable.this.status == PortStatus.READY) {
                         Connectable.this.connect();
                     }
-                }
-
-                @Override
-                public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                    return ActionUpdateThread.EDT;
                 }
 
                 @Override

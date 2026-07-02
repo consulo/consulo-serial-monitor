@@ -6,7 +6,6 @@ import consulo.application.dumb.DumbAware;
 import consulo.localize.LocalizeValue;
 import consulo.serial.monitor.icon.SerialMonitorIconGroup;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
-import consulo.ui.ex.action.ActionUpdateThread;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.Presentation;
 import consulo.ui.ex.action.ToggleAction;
@@ -23,11 +22,6 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
   public ConnectDisconnectAction(@Nonnull JeditermSerialMonitorDuplexConsoleView consoleView) {
     super(SerialMonitorLocalize.connectTitle(), SerialMonitorLocalize.connectTooltip(), SerialMonitorIconGroup.connectactive());
     myConsoleView = consoleView;
-  }
-
-  @Override
-  public @Nonnull ActionUpdateThread getActionUpdateThread() {
-    return ActionUpdateThread.BGT;
   }
 
   @Override

@@ -17,7 +17,6 @@ import consulo.process.ProcessHandler;
 import consulo.process.event.ProcessEvent;
 import consulo.project.Project;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
-import consulo.ui.ex.action.ActionUpdateThread;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.ToggleAction;
@@ -256,11 +255,6 @@ public class JeditermConsoleView implements ConsoleView {
             ActionLocalize.actionEditorconsolescrolltotheendText(),
             AllIcons.RunConfigurations.Scroll_down) {
             @Override
-            public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                return ActionUpdateThread.BGT;
-            }
-
-            @Override
             public boolean isSelected(@Nonnull AnActionEvent e) {
                 return widget.getTerminalVerticalScrollModel().getValue() == 0;
             }
@@ -299,11 +293,6 @@ public class JeditermConsoleView implements ConsoleView {
                 if (emulator != null) {
                     emulator.setTimestamped(isSelected);
                 }
-            }
-
-            @Override
-            public @Nonnull ActionUpdateThread getActionUpdateThread() {
-                return ActionUpdateThread.EDT;
             }
         };
     }

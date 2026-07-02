@@ -201,11 +201,6 @@ public class JeditermSerialMonitorDuplexConsoleView extends DuplexConsoleView<Je
         }
 
         @Override
-        public @Nonnull ActionUpdateThread getActionUpdateThread() {
-            return ActionUpdateThread.EDT;
-        }
-
-        @Override
         public void update(@Nonnull AnActionEvent e) {
             super.update(e);
             LocalizeValue text = isPrimaryConsoleEnabled() ?
@@ -226,17 +221,11 @@ public class JeditermSerialMonitorDuplexConsoleView extends DuplexConsoleView<Je
         }
     }
 
-    private class ClearAllAction extends DumbAwareAction {
+    private class ClearAllAction extends DumbAwareAction implements AnActionWithSyncUpdate {
 
         private ClearAllAction() {
             super(ExecutionLocalize.clearAllFromConsoleActionName(), SerialMonitorLocalize.actionClearContentsConsoleDescription(), AllIcons.Actions.GC);
         }
-
-        @Override
-        public @Nonnull ActionUpdateThread getActionUpdateThread() {
-            return ActionUpdateThread.EDT;
-        }
-
 
         @Override
         public void update(@Nonnull AnActionEvent e) {
@@ -263,11 +252,6 @@ public class JeditermSerialMonitorDuplexConsoleView extends DuplexConsoleView<Je
     }
 
     private class SerialPauseAction extends ToggleAction {
-
-        @Override
-        public @Nonnull ActionUpdateThread getActionUpdateThread() {
-            return ActionUpdateThread.BGT;
-        }
 
         private SerialPauseAction() {
             super(SerialMonitorLocalize.actionPauseText(), SerialMonitorLocalize.actionPauseDescription(),
