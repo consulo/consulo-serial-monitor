@@ -25,6 +25,10 @@ import consulo.serial.monitor.icon.SerialMonitorIconGroup;
 import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.JBLoadingPanel;
+import consulo.ui.ex.coroutine.UIAction;
+import consulo.util.concurrent.coroutine.Coroutine;
+import consulo.util.concurrent.coroutine.step.CallSubroutine;
+import consulo.util.concurrent.coroutine.step.Condition;
 import jakarta.annotation.Nonnull;
 
 import java.nio.charset.Charset;
@@ -278,13 +282,18 @@ public class JeditermSerialMonitorDuplexConsoleView extends DuplexConsoleView<Je
         }
 
         @Override
-        public void update(@Nonnull AnActionEvent e) {
-            if (myEditor.getComponent().isShowing()) {
-                super.update(e);
-            }
-            else {
-                e.getPresentation().setVisible(false);
-            }
+        @SuppressWarnings("unchecked")
+        public Coroutine<?, ?> updateAsync(AnActionEvent e) {
+            Coroutine superUpdate = super.updateAsync(e);
+            return UIAction.<Void, Boolean>apply(i -> {
+                    boolean showing = myEditor.getComponent().isShowing();
+                    if (!showing) {
+                        e.getPresentation().setVisible(false);
+                    }
+                    return showing;
+                })
+                .toCoroutine()
+                .then(Condition.doIf((b, continuation) -> Boolean.TRUE.equals(b), CallSubroutine.call(superUpdate)));
         }
     }
 
