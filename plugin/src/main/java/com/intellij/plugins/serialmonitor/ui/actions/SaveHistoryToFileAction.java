@@ -14,7 +14,6 @@ import consulo.serialMonitor.localize.SerialMonitorLocalize;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.util.collection.ContainerUtil;
-import consulo.virtualFileSystem.VirtualFileWrapper;
 import jakarta.annotation.Nonnull;
 
 import java.io.File;
@@ -52,13 +51,19 @@ public class SaveHistoryToFileAction extends DumbAwareAction {
                 SerialMonitorLocalize.dialogSaveDesc().get()
         );
 
-        VirtualFileWrapper wrapper = FileChooserFactory.getInstance()
-                .createSaveFileDialog(descriptor, e.getData(Project.KEY))
-                .save(null, defaultLogFilename());
+        FileChooserFactory.getInstance()
+                .newSaverBuilder(descriptor)
+                .project(e.getData(Project.KEY))
+                .fileName(defaultLogFilename())
+                .showAsync()
+                .whenComplete((path, error) -> {
+                    if (error == null) {
+                        saveHistory(path.toFile());
+                    }
+                });
+    }
 
-        if (wrapper == null) return;
-        File file = wrapper.getFile();
-
+    private void saveHistory(File file) {
         Application.get().executeOnPooledThread(() -> {
             List<TerminalLine> lines;
             try {
